@@ -6,6 +6,21 @@ Get 3 in a row to overwhelm your opponent and steal their treasure.
 
 Pick your team:  Choose 3 units you'll have availabe, Kobolds and Goblins have different, but complimentary powers
 
+Unit Types.  Each activity 1/unit/game
+Kobold:
+    Miner - can remove (or replace) adjacent enemy
+    Scout - place a second mark in any corner
+    Disruptor - skip opponent next turn
+
+Goblin:
+    Shaman - Protect a space from capture
+    Gremlin - Swap any 2 of your units
+    Trickster - place unit in free corner
+
+Both:
+    Sapper - Remove any unit but skip your next turn
+    Guard - this unit cannot be removed or swapped
+    Caller - Summon an additional unit
 
 Possible variants
    Try to NOT get 3 in a row
