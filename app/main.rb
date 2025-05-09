@@ -1,8 +1,9 @@
 require 'app/menu.rb'
+require 'app/board.rb'
 
 
 def init args
-  args.state.game = Menu.new()
+  args.state.game = Board.new()
 end
 
 def tick args
