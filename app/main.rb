@@ -1,4 +1,5 @@
 require 'app/menu.rb'
+require 'app/board.rb'
 
 
 def init args
@@ -14,6 +15,6 @@ def tick args
   args.state.game.tick
 
   if args.state.selected_button and args.inputs.mouse.click
-    puts args.state.selected_button
+    puts args.state.selected_button.id
   end
 end
