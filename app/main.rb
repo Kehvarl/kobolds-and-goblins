@@ -3,7 +3,7 @@ require 'app/board.rb'
 
 
 def init args
-  args.state.game = Board.new()
+  args.state.game = Menu.new()
 end
 
 def tick args
@@ -15,6 +15,6 @@ def tick args
   args.state.game.tick
 
   if args.state.selected_button and args.inputs.mouse.click
-    puts args.state.selected_button
+    puts args.state.selected_button.id
   end
 end

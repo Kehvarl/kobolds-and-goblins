@@ -47,37 +47,44 @@ class Menu
   end
 
   def calc
-    target_point = state.selected_button.rect.center
-    state.selection_point.x = state.selection_point.x.lerp(target_point.x, 0.25)
-    state.selection_point.y = state.selection_point.y.lerp(target_point.y, 0.25)
+    target_point_x = state.selected_button.rect.x + (state.selected_button.rect.w / 2)
+    target_point_y = state.selected_button.rect.y + (state.selected_button.rect.h / 2)
+    state.selection_point.x = state.selection_point.x.lerp(target_point_x, 0.25)
+    state.selection_point.y = state.selection_point.y.lerp(target_point_y, 0.25)
     calc_directional_input
     calc_mouse_input
   end
 
   def defaults
-    if !state.menu
-      state.menu = {
-        button_cell_w: 2,
-        button_cell_h: 1,
-      }
-      state.menu.button_w = Layout::rect(w: 2).w
-      state.menu.button_h = Layout::rect(h: 1).h
-      state.menu.buttons = [
-        menu_prefab(id: :item_1, text: "Item 1", row: 0, col: 0, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_2, text: "Item 2", row: 0, col: 2, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_3, text: "Item 3", row: 0, col: 4, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_4, text: "Item 4", row: 1, col: 0, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_5, text: "Item 5", row: 1, col: 2, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_6, text: "Item 6", row: 1, col: 4, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_7, text: "Item 7", row: 2, col: 0, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_8, text: "Item 8", row: 2, col: 2, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-        menu_prefab(id: :item_9, text: "Item 9", row: 2, col: 4, w: state.menu.button_cell_w, h: state.menu.button_cell_h),
-      ]
+    return if state.menu
+
+    button_labels = [
+      { id: :new_game, text: "New Game" },
+      { id: :how_to, text: "How To Play" },
+      { id: :options, text: "Options" },
+      { id: :exit, text: "Exit" }
+    ]
+
+    state.menu = {
+      button_cell_w: 8,
+      button_cell_h: 1,
+      button_w: Layout::rect(w: 8).w,
+      button_h: Layout::rect(h: 1).h
+    }
+
+    state.menu.buttons = button_labels.each_with_index.map do |entry, i|
+      menu_prefab(
+        id: entry[:id],
+        text: entry[:text],
+        row: i+4,
+        col: 8,
+        w: state.menu.button_cell_w,
+        h: state.menu.button_cell_h
+      )
     end
 
     state.selected_button ||= state.menu.buttons.first
-    state.selection_point ||= { x: state.selected_button.rect.center.x,
-                                y: state.selected_button.rect.center.y }
+    state.selection_point ||= state.selected_button.rect.center
     state.input_debounce  ||= 0
   end
 
@@ -95,4 +102,5 @@ class Menu
       ]
     }
   end
+
 end
