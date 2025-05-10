@@ -3,6 +3,7 @@ require 'app/board.rb'
 
 
 def init args
+  args.state.gamestate = :menu
   args.state.game = Menu.new()
 end
 
@@ -11,10 +12,23 @@ def tick args
     init args
   end
 
-  args.state.game.args = args
-  args.state.game.tick
-
-  if args.state.selected_button and args.inputs.mouse.click
-    puts args.state.selected_button.id
+  case args.state.gamestate
+  when :menu
+    args.state.game.args = args
+    args.state.game.tick
+    if args.state.selected_button and args.inputs.mouse.click
+      case args.state.selected_button.id
+      when :new_game
+        puts "Start new game"
+      when :how_to
+        puts "How To Play"
+      when :options
+        puts "Options Menu"
+      when :exit
+        puts "Exit"
+      end
+    end
+  when :game
+    puts "Game..."
   end
 end
