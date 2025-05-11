@@ -2,24 +2,26 @@
 class Menu
   attr_gtk
 
-  def tick
+  def tick args
+    self.args = args
     defaults
     calc
-    render
   end
 
   def render
-    outputs.primitives << state.selection_point.merge(w: state.menu.button_w + 8,
-                                                      h: state.menu.button_h + 8,
-                                                      a: 128,
-                                                      r: 0,
-                                                      g: 200,
-                                                      b: 100,
-                                                      path: :solid,
-                                                      anchor_x: 0.5,
-                                                      anchor_y: 0.5)
+    out = []
+    out <<  state.selection_point.merge(w: state.menu.button_w + 8,
+                                        h: state.menu.button_h + 8,
+                                        a: 128,
+                                        r: 0,
+                                        g: 200,
+                                        b: 100,
+                                        path: :solid,
+                                        anchor_x: 0.5,
+                                        anchor_y: 0.5)
 
-    outputs.primitives << state.menu.buttons.map(&:primitives)
+    out << state.menu.buttons.map(&:primitives)
+    out
   end
 
   def calc_directional_input
