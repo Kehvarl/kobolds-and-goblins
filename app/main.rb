@@ -19,7 +19,7 @@ def menu_tick args
     when :options
       puts "Options Menu"
     when :exit
-      puts "Exit"
+      args.gtk.request_quit
     end
   end
   args.outputs.primitives << args.state.game.render
