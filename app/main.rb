@@ -3,8 +3,8 @@ require 'app/board.rb'
 
 
 def init args
-  args.state.gamestate = :menu
-  args.state.game = Menu.new()
+  args.state.gamestate = :game
+  args.state.game = Board.new()
 end
 
 def menu_tick args
@@ -34,6 +34,8 @@ def tick args
   when :menu
     menu_tick args
   when :game
+    args.state.game.tick args
+    args.outputs.primitives << args.state.game.render
     puts "Game..."
   end
 end
