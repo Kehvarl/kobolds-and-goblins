@@ -1,3 +1,5 @@
+  # ./samples/09_ui_controls/02_menu_navigation/app/main.rb
+
 class Board
   attr_gtk
 
