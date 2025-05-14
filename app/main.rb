@@ -27,7 +27,22 @@ def menu_tick args
 end
 
 def instructions_tick args
-  args.outputs.primitives << {x:320, y:700, text:"How To Play"}.label!
+    instruction_string = "How To Play\n\n"
+    instruction_string +="Try to make a line of 5 Kobolds"
+
+    max_character_length = 80
+
+    instructions = String.wrapped_lines instruction_string,
+                                              max_character_length
+
+    args.outputs.labels << instructions.map_with_index do |s, i|
+      {
+        x: 320,
+        y: 720 - 60,
+        anchor_y: i,
+        text: s
+      }
+    end
   if args.inputs.keyboard.keys[:up].size > 0
     args.state.gamestate = :menu
   end
