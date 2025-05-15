@@ -1,5 +1,6 @@
 # Kobolds and Goblins
 
+
 tic-tac-toe style game
 
 Get 3 in a row to overwhelm your opponent and steal their treasure.
@@ -39,3 +40,4 @@ Needs
   Sprites:
     Kobolds
     Goblins
+
