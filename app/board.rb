@@ -12,6 +12,8 @@ class Board
   def defaults
     return if state.grid
 
+    state.tiles = []
+
     state.grid = {
       cell_w: 1,
       cell_h: 1,
@@ -20,8 +22,8 @@ class Board
     }
 
     new_squares = []
-    (1..6).each do |y|
-      (9..14).each do |x|
+    (1..5).each do |y|
+      (9..13).each do |x|
         new_squares << cell_prefab(
           row: y,
           col: x,
@@ -84,8 +86,9 @@ class Board
 
   def render
     out = []
-    out <<  state.selection_point.merge(w: state.grid.cell_w + 8,
-                                        h: state.grid.cell_h + 8,
+    out << state.grid.cells.map(&:primitives)
+    out <<  state.selection_point.merge(w: state.grid.cell_w + 16,
+                                        h: state.grid.cell_h + 16,
                                         a: 128,
                                         r: 0,
                                         g: 200,
@@ -94,6 +97,5 @@ class Board
                                         anchor_x: 0.5,
                                         anchor_y: 0.5)
 
-    out << state.grid.cells.map(&:primitives)
   end
 end
