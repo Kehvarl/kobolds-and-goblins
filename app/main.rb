@@ -13,7 +13,9 @@ def menu_tick args
     case args.state.selected_button.id
     when :new_game
       puts "Start new game"
+      args.state.game = Board.new()
       args.state.gamestate = :game
+      return
     when :how_to
       puts "How To Play"
       args.state.gamestate = :how_to
@@ -48,6 +50,17 @@ def instructions_tick args
   end
 end
 
+def game_tick args
+  args.state.game.tick args
+  if args.state.selected_cell and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter)
+    tile = args.state.selected_cell
+    t = tile.primitives[0]
+    t.primitive_marker = :solid
+    tile.primitives << t
+  end
+  args.outputs.primitives << args.state.game.render
+end
+
 def tick args
   if args.tick_count == 0
     init args
@@ -59,8 +72,6 @@ def tick args
   when :how_to
     instructions_tick args
   when :game
-    args.state.game.tick args
-    args.outputs.primitives << args.state.game.render
-    puts "Game..."
+    game_tick args
   end
 end
