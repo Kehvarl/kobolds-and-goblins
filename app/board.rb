@@ -7,12 +7,14 @@ class Board
     self.args = args
     defaults
     calc
+    find_matches
   end
 
   def defaults
     return if state.grid
 
     state.tiles = []
+    state.matches = []
 
     state.grid = {
       cell_w: 1,
@@ -45,9 +47,10 @@ class Board
       row: row,
       col: col,
       rect: rect,
+      content: :empty,
       primitives: [
-        rect.merge(primitive_marker: :border),
-      ]
+                   rect.merge(primitive_marker: :border),
+                   ]
     }
   end
 
@@ -84,6 +87,59 @@ class Board
     calc_mouse_input
   end
 
+  def find_matches
+    cells = state.grid.cells
+
+    rows = cells.group_by { |c| c[:row] }
+    cols = cells.group_by { |c| c[:col] }
+
+    matches = []
+
+    rows.each_value do |line|
+      sorted = line.sort_by { |c| c[:col] }
+      matches += find_line_matches(sorted)
+    end
+
+    cols.each_value do |line|
+      sorted = line.sort_by { |c| c[:row] }
+      matches += find_line_matches(sorted)
+    end
+
+    diagonals_down = cells.group_by { |c| c[:row] - c[:col] }
+    diagonals_down.each_value do |line|
+      sorted = line.sort_by { |c| [c[:row], c[:col]] }
+      matches += find_line_matches(sorted)
+    end
+
+    diagonals_up = cells.group_by { |c| c[:row] + c[:col] }
+    diagonals_up.each_value do |line|
+      sorted = line.sort_by { |c| [c[:row], c[:col]] }
+      matches += find_line_matches(sorted)
+    end
+
+    matches
+  end
+
+  def find_line_matches(line)
+    return [] if line.empty?
+
+    matches = []
+    current = [line[0]]
+
+    (1...line.length).each do |i|
+      if line[i][:content] == current.last[:content] && line[i][:content] != :empty
+        current << line[i]
+      else
+        matches << current if current.length >= 3
+        current = [line[i]]
+      end
+    end
+
+    matches << current if current.length >= 3
+    puts matches
+    matches.uniq
+  end
+
   def render
     out = []
     out << state.grid.cells.map(&:primitives)
@@ -96,6 +152,16 @@ class Board
                                         path: :solid,
                                         anchor_x: 0.5,
                                         anchor_y: 0.5)
+
+    out << state.matches.flatten.uniq.map do |cell|
+      cell[:rect].merge(
+        a: 200,
+        r: 255,
+        g: 0,
+        b: 0,
+        primitive_marker: :solid
+      )
+    end
 
   end
 end
