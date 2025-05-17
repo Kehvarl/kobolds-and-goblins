@@ -54,9 +54,12 @@ def game_tick args
   args.state.game.tick args
   if args.state.selected_cell and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter)
     tile = args.state.selected_cell
+    return if tile.content != :empty
     t = tile.primitives[0]
     t.primitive_marker = :solid
     tile.primitives << t
+    tile.content = :kobold
+    puts "set tile"
   end
   args.outputs.primitives << args.state.game.render
 end
