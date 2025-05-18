@@ -117,7 +117,7 @@ class Board
       matches += find_line_matches(sorted)
     end
 
-    matches
+    state.matches = matches
   end
 
   def find_line_matches(line)
@@ -130,14 +130,25 @@ class Board
       if line[i][:content] == current.last[:content] && line[i][:content] != :empty
         current << line[i]
       else
-        matches << current if current.length >= 3
+        matches << tag_match(current) if current.length >= 3
         current = [line[i]]
       end
     end
 
-    matches << current if current.length >= 3
-    puts matches
-    matches.uniq
+    matches << tag_match(current) if current.length >= 3
+    matches.compact
+  end
+
+  def tag_match(cells)
+    tag =
+      case cells.length
+      when 3 then :three
+      when 4 then :four
+      when 5 then :five
+      else :longer
+      end
+
+    { tag: tag, cells: cells }
   end
 
   def render
@@ -153,15 +164,18 @@ class Board
                                         anchor_x: 0.5,
                                         anchor_y: 0.5)
 
-    out << state.matches.flatten.uniq.map do |cell|
-      cell[:rect].merge(
-        a: 200,
-        r: 255,
-        g: 0,
-        b: 0,
-        primitive_marker: :solid
-      )
-    end
+    out << state.matches.map do |match|
+      color =
+      case match[:tag]
+      when :three then { r: 255, g: 255, b: 0 }
+      when :four then { r: 255, g: 128, b: 0 }
+      when :five then { r: 255, g: 0,   b: 0 }
+      else            { r: 128, g: 0,   b: 255 }
+      end
 
+      match[:cells].map do |cell|
+        cell[:rect].merge({**color, a: 200, primitive_marker: :solid})
+      end
+    end
   end
 end
