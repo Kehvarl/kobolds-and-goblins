@@ -57,6 +57,38 @@ class Menu
     calc_mouse_input
   end
 
+  def setup_menu_config
+    return if state.menu_config
+
+    state.menu_config = {
+      main: {
+             title: "Main Menu",
+             entries: [
+                       { id: :new_game, text: "New Game", action: -> { switch_menu(:select_side) } },
+                       { id: :how_to, text: "How To Play" },
+                       { id: :options, text: "Options" },
+                       { id: :exit, text: "Exit", action: -> { args.gtk.exit } }
+                      ]
+            },
+      select_side: {
+                    title: "Select Side",
+                    entries: [
+                              { id: :kobold, text: "Kobold", action: -> { state.selected_side = :kobold; switch_menu(:select_units) } },
+                              { id: :goblin, text: "Goblin", action: -> { state.selected_side = :goblin; switch_menu(:select_units) } },
+                              { id: :back, text: "Back", action: -> { switch_menu(:main) } }
+                             ]
+                   },
+      select_units: {
+                     title: "Select 3 Units",
+                     unit_list: %w[Spear Archer Mage Brute Bomber Scout],
+                     entries: [
+                               { id: :confirm, text: "Confirm", action: -> { confirm_units } },
+                               { id: :back, text: "Back", action: -> { switch_menu(:select_side) } }
+                              ]
+                    }
+    }
+  end
+
   def defaults
     return if state.menu
 
@@ -99,9 +131,9 @@ class Menu
       text: text,
       rect: rect,
       primitives: [
-        rect.merge(primitive_marker: :border),
-        rect.center.merge(text: text, anchor_x: 0.5, anchor_y: 0.5)
-      ]
+                   rect.merge(primitive_marker: :border),
+                   rect.center.merge(text: text, anchor_x: 0.5, anchor_y: 0.5)
+                  ]
     }
   end
 
