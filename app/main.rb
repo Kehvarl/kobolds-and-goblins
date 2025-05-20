@@ -56,11 +56,25 @@ def game_tick args
     tile = args.state.selected_cell
     return if tile.content != :empty
     t = tile.primitives[0]
-    t.primitive_marker = :solid
+    t.primitive_marker = :soliddef tick args
+  if args.tick_count == 0
+    init args
+  end
+
+  case args.state.gamestate
+  when :menu
+    menu_tick args
+  when :how_to
+    instructions_tick args
+  when :game
+    game_tick args
+  end
+end
     tile.primitives << t
     tile.content = :kobold
     puts "set tile"
   end
+
   args.outputs.primitives << args.state.game.render
 end
 
@@ -72,6 +86,12 @@ def tick args
   case args.state.gamestate
   when :menu
     menu_tick args
+  when :side_menu
+    puts "side"
+    args.state.gamestate = :unit_menu
+  when :unit_menu
+    puts: "units"
+    args.state.gamestate = :game
   when :how_to
     instructions_tick args
   when :game
