@@ -57,38 +57,6 @@ class Menu
     calc_mouse_input
   end
 
-  def setup_menu_config
-    return if state.menu_config
-
-    state.menu_config = {
-      main: {
-             title: "Main Menu",
-             entries: [
-                       { id: :new_game, text: "New Game", action: -> { switch_menu(:select_side) } },
-                       { id: :how_to, text: "How To Play" },
-                       { id: :options, text: "Options" },
-                       { id: :exit, text: "Exit", action: -> { args.gtk.exit } }
-                      ]
-            },
-      select_side: {
-                    title: "Select Side",
-                    entries: [
-                              { id: :kobold, text: "Kobold", action: -> { state.selected_side = :kobold; switch_menu(:select_units) } },
-                              { id: :goblin, text: "Goblin", action: -> { state.selected_side = :goblin; switch_menu(:select_units) } },
-                              { id: :back, text: "Back", action: -> { switch_menu(:main) } }
-                             ]
-                   },
-      select_units: {
-                     title: "Select 3 Units",
-                     unit_list: %w[Spear Archer Mage Brute Bomber Scout],
-                     entries: [
-                               { id: :confirm, text: "Confirm", action: -> { confirm_units } },
-                               { id: :back, text: "Back", action: -> { switch_menu(:select_side) } }
-                              ]
-                    }
-    }
-  end
-
   def defaults
     return if state.menu
 
@@ -137,4 +105,40 @@ class Menu
     }
   end
 
+end
+
+  # ./samples/09_ui_controls/02_menu_navigation/app/main.rb
+class Team_Select < Menu
+
+  def defaults
+    return if state.menu
+
+    button_labels = [
+      { id: :kobolds, text: "Kobolds" },
+      { id: :goblins, text: "Goblins" },
+      { id: :back, text: "Back" },
+    ]
+
+    state.menu = {
+      button_cell_w: 8,
+      button_cell_h: 1,
+      button_w: Layout::rect(w: 8).w,
+      button_h: Layout::rect(h: 1).h
+    }
+
+    state.menu.buttons = button_labels.each_with_index.map do |entry, i|
+      menu_prefab(
+        id: entry[:id],
+        text: entry[:text],
+        row: i+4,
+        col: 8,
+        w: state.menu.button_cell_w,
+        h: state.menu.button_cell_h
+      )
+    end
+
+    state.selected_button ||= state.menu.buttons.first
+    state.selection_point ||= state.selected_button.rect.center
+    state.input_debounce  ||= 0
+  end
 end

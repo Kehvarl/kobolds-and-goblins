@@ -13,8 +13,9 @@ def menu_tick args
     case args.state.selected_button.id
     when :new_game
       puts "Start new game"
-      args.state.game = Board.new()
-      args.state.gamestate = :game
+      args.state.menu = nil
+      args.state.game = Team_Select.new()
+      args.state.gamestate = :team_select
       return
     when :how_to
       puts "How To Play"
@@ -56,25 +57,36 @@ def game_tick args
     tile = args.state.selected_cell
     return if tile.content != :empty
     t = tile.primitives[0]
-    t.primitive_marker = :soliddef tick args
-  if args.tick_count == 0
-    init args
-  end
+    t.primitive_marker = :solid
 
-  case args.state.gamestate
-  when :menu
-    menu_tick args
-  when :how_to
-    instructions_tick args
-  when :game
-    game_tick args
-  end
-end
     tile.primitives << t
     tile.content = :kobold
     puts "set tile"
   end
 
+  args.outputs.primitives << args.state.game.render
+end
+
+def team_select_tick args
+  args.state.game.tick args
+  if args.state.selected_button and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter)
+    case args.state.selected_button.id
+    when :kobolds
+      puts "Kobolds"
+      args.state.game = Board.new()
+      args.state.gamestate = :game
+    when :goblins
+      puts "Goblins"
+      args.state.game = Board.new()
+      args.state.gamestate = :game
+    when :back
+      puts "Options Menu"
+      args.state.game = Menu.new()
+      args.state.gamestate = :main_menu
+    else
+      puts args.state.selected_button.id
+    end
+  end
   args.outputs.primitives << args.state.game.render
 end
 
@@ -86,11 +98,10 @@ def tick args
   case args.state.gamestate
   when :menu
     menu_tick args
-  when :side_menu
-    puts "side"
-    args.state.gamestate = :unit_menu
+  when :team_select
+    team_select_tick args
   when :unit_menu
-    puts: "units"
+    puts "units"
     args.state.gamestate = :game
   when :how_to
     instructions_tick args

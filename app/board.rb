@@ -154,15 +154,15 @@ class Board
   def render
     out = []
     out << state.grid.cells.map(&:primitives)
-    out <<  state.selection_point.merge(w: state.grid.cell_w + 16,
-                                        h: state.grid.cell_h + 16,
-                                        a: 128,
-                                        r: 0,
-                                        g: 200,
-                                        b: 100,
-                                        path: :solid,
-                                        anchor_x: 0.5,
-                                        anchor_y: 0.5)
+    out << state.selection_point.merge(w: state.grid.cell_w + 16,
+                                       h: state.grid.cell_h + 16,
+                                       a: 128,
+                                       r: 0,
+                                       g: 200,
+                                       b: 100,
+                                       path: :solid,
+                                       anchor_x: 0.5,
+                                       anchor_y: 0.5)
 
     out << state.matches.map do |match|
       color =
