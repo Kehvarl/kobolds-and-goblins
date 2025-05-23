@@ -62,7 +62,8 @@ def game_tick args
 
     tile.primitives << t
     tile.content = :kobold
-    puts "set tile"
+
+    args.state.gamestate = :computer_move
   end
 
   args.outputs.primitives << args.state.game.render
@@ -113,5 +114,8 @@ def tick args
     instructions_tick args
   when :game
     game_tick args
+  when :computer_move
+    args.state.game.make_ai_move :goblin
+    args.state.gamestate = :game
   end
 end

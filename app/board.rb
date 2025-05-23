@@ -142,40 +142,70 @@ class Board
   def tag_match(cells)
     tag =
       case cells.length
-      when 3 then :three
-      when 4 then :four
-      when 5 then :five
-      else :longer
-      end
+    when 3 then :three
+    when 4 then :four
+    when 5 then :five
+    else :longer
+    end
 
     { tag: tag, cells: cells }
+  end
+
+  def make_ai_move(side)
+    empty_cells = state.grid.cells.select { |cell| cell[:content] == :empty }
+    return if empty_cells.empty?
+
+    weighted_choices = []
+
+    empty_cells.each do |cell|
+      simulated_content = cell[:content]
+      cell[:content] = side
+      find_matches
+      score = state.matches.count { |m| m[:cells].include?(cell) }
+      weighted_choices << [cell, score]
+      cell[:content] = simulated_content
+    end
+
+    best = weighted_choices.max_by { |_, score| score }
+
+    if best && best[1] > 0
+      best[0][:content] = side
+      best[0][:primitives][0].primitive_marker = :solid
+    else
+      # fallback: pick any empty cell at random
+      t = empty_cells.sample
+      t[:content] = side
+      t[:primitives][0].primitive_marker = :solid
+    end
+
+    find_matches
   end
 
   def render
     out = []
     out << state.grid.cells.map(&:primitives)
     out << state.selection_point.merge(w: state.grid.cell_w + 16,
-                                       h: state.grid.cell_h + 16,
-                                       a: 128,
-                                       r: 0,
-                                       g: 200,
-                                       b: 100,
-                                       path: :solid,
-                                       anchor_x: 0.5,
-                                       anchor_y: 0.5)
+                                      h: state.grid.cell_h + 16,
+                                      a: 128,
+                                      r: 0,
+                                      g: 200,
+                                      b: 100,
+                                      path: :solid,
+                                      anchor_x: 0.5,
+                                      anchor_y: 0.5)
 
     out << state.matches.map do |match|
       color =
-      case match[:tag]
-      when :three then { r: 255, g: 255, b: 0 }
-      when :four then { r: 255, g: 128, b: 0 }
-      when :five then { r: 255, g: 0,   b: 0 }
-      else            { r: 128, g: 0,   b: 255 }
-      end
+        case match[:tag]
+        when :three then { r: 255, g: 255, b: 0 }
+        when :four then { r: 255, g: 128, b: 0 }
+        when :five then { r: 255, g: 0,   b: 0 }
+        else            { r: 128, g: 0,   b: 255 }
+        end
 
-      match[:cells].map do |cell|
-        cell[:rect].merge({**color, a: 200, primitive_marker: :solid})
+        match[:cells].map do |cell|
+          cell[:rect].merge({**color, a: 200, primitive_marker: :solid})
+        end
       end
-    end
   end
 end
