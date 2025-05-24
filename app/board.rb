@@ -1,5 +1,8 @@
-  # ./samples/09_ui_controls/02_menu_navigation/app/main.rb
+class Tile
+  attr_sprite
+end
 
+# ./samples/09_ui_controls/02_menu_navigation/app/main.rb
 class Board
   attr_gtk
 
@@ -169,13 +172,25 @@ class Board
     best = weighted_choices.max_by { |_, score| score }
 
     if best && best[1] > 0
-      best[0][:content] = side
-      best[0][:primitives][0].primitive_marker = :solid
+      best[0].content = side
+      m = Tile.new()
+      m.x = best[0].rect.x
+      m.y = best[0].rect.y
+      m.w = best[0].rect.w
+      m.h = best[0].rect.h
+      m.path = "sprites/circle/blue.png"
+      best[0].primitives << m
     else
       # fallback: pick any empty cell at random
       t = empty_cells.sample
       t[:content] = side
-      t[:primitives][0].primitive_marker = :solid
+      m = Tile.new()
+      m.x = t.rect.x
+      m.y = t.rect.y
+      m.w = t.rect.w
+      m.h = t.rect.h
+      m.path = "sprites/circle/blue.png"
+      t.primitives << m
     end
 
     find_matches
@@ -204,7 +219,7 @@ class Board
         end
 
         match[:cells].map do |cell|
-          cell[:rect].merge({**color, a: 200, primitive_marker: :solid})
+          cell[:rect].merge({**color, a: 200, primitive_marker: :border})
         end
       end
   end
