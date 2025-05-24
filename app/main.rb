@@ -57,8 +57,12 @@ def game_tick args
   if args.state.selected_button and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space)
     tile = args.state.selected_cell
     return if tile.content != :empty
-    t = tile.primitives[0]
-    t.primitive_marker = :solid
+    t = Tile.new()
+    t.x = tile.rect.x
+    t.y = tile.rect.y
+    t.w = tile.rect.w
+    t.h = tile.rect.h
+    t.path = "sprites/square/green.png"
 
     tile.primitives << t
     tile.content = :kobold
