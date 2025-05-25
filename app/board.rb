@@ -1,5 +1,13 @@
 class Tile
   attr_sprite
+
+  def initialize (x, y, w, h, path)
+    @x = x
+    @y = y
+    @w = w
+    @h = h
+    @path = path
+  end
 end
 
 # ./samples/09_ui_controls/02_menu_navigation/app/main.rb
@@ -173,23 +181,15 @@ class Board
 
     if best && best[1] > 0
       best[0].content = side
-      m = Tile.new()
-      m.x = best[0].rect.x
-      m.y = best[0].rect.y
-      m.w = best[0].rect.w
-      m.h = best[0].rect.h
-      m.path = "sprites/circle/blue.png"
+      m = Tile.new(best[0].rect.x, best[0].rect.y, best[0].rect.w, best[0].rect.h,
+                   "sprites/circle/blue.png")
       best[0].primitives << m
     else
       # fallback: pick any empty cell at random
       t = empty_cells.sample
       t[:content] = side
-      m = Tile.new()
-      m.x = t.rect.x
-      m.y = t.rect.y
-      m.w = t.rect.w
-      m.h = t.rect.h
-      m.path = "sprites/circle/blue.png"
+      m = Tile.new(t.rect.x, t.rect.y, t.rect.w, t.rect.h,
+                   "sprites/circle/blue.png")
       t.primitives << m
     end
 
