@@ -1,12 +1,29 @@
 class Tile
   attr_sprite
 
-  def initialize (x, y, w, h, path)
+  def initialize (x, y, w, h, path, tile_w, tile_h, row, frames)
     @x = x
     @y = y
     @w = w
     @h = h
     @path = path
+    @tile_w = tile_w
+    @tile_h = tile_h
+    @row = row
+    @tile_x = 0
+    @tile_y = @tile_h * @row
+    @frame = 0
+    @frames = frames
+    @frame_delay = 5
+  end
+
+  def tick
+    @frame_delay -= 1
+    if @frame_delay <= 0
+      @frame_delay = 5
+      @frame = (@frame + 1)%@frames
+      @tile_x = @tile_w * @frame
+    end
   end
 end
 
@@ -19,13 +36,14 @@ class Board
     defaults
     calc
     find_matches
+    state.sprites.each{|t| t.tick}
   end
 
   def defaults
     return if state.grid
 
-    state.tiles = []
     state.matches = []
+    state.sprites = []
 
     state.grid = {
       cell_w: 1,
@@ -181,16 +199,21 @@ class Board
 
     if best && best[1] > 0
       best[0].content = side
+      # goblin king 64x64
+      # row 5
+      # 15 frames
       m = Tile.new(best[0].rect.x, best[0].rect.y, best[0].rect.w, best[0].rect.h,
-                   "sprites/circle/blue.png")
+                   "sprites/goblin_king.png", 64, 64, 5, 15)
       best[0].primitives << m
+      state.sprites << m
     else
       # fallback: pick any empty cell at random
       t = empty_cells.sample
       t[:content] = side
       m = Tile.new(t.rect.x, t.rect.y, t.rect.w, t.rect.h,
-                   "sprites/circle/blue.png")
+                   "sprites/goblin_king.png", 64, 64, 5, 15)
       t.primitives << m
+      state.sprites << m
     end
 
     find_matches
