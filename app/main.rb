@@ -57,11 +57,15 @@ def game_tick args
   if args.state.selected_button and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space)
     tile = args.state.selected_cell
     return if tile.content != :empty
+    # kobold priest 32x32
+    # Row 2
+    # 8 frames
     t = Tile.new(x=tile.rect.x, y=tile.rect.y, w=tile.rect.w, h=tile.rect.h,
-                 path="sprites/square/green.png")
+                 path="sprites/kobold_priest.png", tile_w=32, tile_h=32, row=2, frames=8)
 
     tile.primitives << t
     tile.content = :kobold
+    args.state.sprites << t
 
     args.state.gamestate = :computer_move
   end
