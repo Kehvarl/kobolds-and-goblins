@@ -57,9 +57,6 @@ def game_tick args
   if args.state.selected_button and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space)
     tile = args.state.selected_cell
     return if tile.content != :empty
-    # kobold priest 32x32
-    # Row 2
-    # 8 frames
     t = Tile.new(x=tile.rect.x, y=tile.rect.y, w=tile.rect.w, h=tile.rect.h,
                  path="sprites/kobold_priest.png", tile_w=32, tile_h=32, row=2, frames=8)
 
@@ -71,6 +68,10 @@ def game_tick args
   end
 
   args.outputs.primitives << args.state.game.render
+
+  if args.state.game.moves_remaining == 0
+    args.state.gamestate = :game_over
+  end
 end
 
 def team_select_tick args
@@ -121,5 +122,11 @@ def tick args
   when :computer_move
     args.state.game.make_ai_move :goblin
     args.state.gamestate = :game
+  when :game_over
+      args.outputs.primitives << args.state.game.render
+      args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:255,b:255}.solid!
+      args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:0,b:0}.border!
+      args.outputs.primitives << {x:640, y:500, text:"Game Over", size_enum: 7, anchor_x:0.5}.label!
+
   end
 end

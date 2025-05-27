@@ -219,6 +219,10 @@ class Board
     find_matches
   end
 
+  def moves_remaining
+    return state.grid.cells.select{|c| c.content == :empty}.size
+  end
+
   def render
     out = []
     out << state.grid.cells.map(&:primitives)
