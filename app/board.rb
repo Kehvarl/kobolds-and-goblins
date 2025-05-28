@@ -1,31 +1,53 @@
 class Tile
   attr_sprite
 
-  def initialize (x, y, w, h, path, tile_w, tile_h, row, frames)
+  SIDES = {
+    kobolds: {
+      path: "sprites/kobold_priest.png",
+      tile_w: 32,
+      tile_h: 32,
+      row: 2,
+      frames: 8
+    },
+    goblins: {
+      path: "sprites/goblin_king.png",
+      tile_w: 64,
+      tile_h: 64,
+      row: 5,
+      frames: 15
+    }
+  }
+
+  def initialize(x, y, w, h, side)
+    config = SIDES[side]
+
     @x = x
     @y = y
     @w = w
     @h = h
-    @path = path
-    @tile_w = tile_w
-    @tile_h = tile_h
-    @row = row
+
+    @path = config[:path]
+    @tile_w = config[:tile_w]
+    @tile_h = config[:tile_h]
+    @row = config[:row]
+    @frames = config[:frames]
+
+    @frame = 0
+    @frame_delay = 5
     @tile_x = 0
     @tile_y = @tile_h * @row
-    @frame = 0
-    @frames = frames
-    @frame_delay = 5
   end
 
   def tick
     @frame_delay -= 1
-    if @frame_delay <= 0
-      @frame_delay = 5
-      @frame = (@frame + 1)%@frames
-      @tile_x = @tile_w * @frame
-    end
+    return unless @frame_delay <= 0
+
+    @frame_delay = 5
+    @frame = (@frame + 1) % @frames
+    @tile_x = @tile_w * @frame
   end
 end
+
 
 # ./samples/09_ui_controls/02_menu_navigation/app/main.rb
 class Board
@@ -202,16 +224,14 @@ class Board
       # goblin king 64x64
       # row 5
       # 15 frames
-      m = Tile.new(best[0].rect.x, best[0].rect.y, best[0].rect.w, best[0].rect.h,
-                   "sprites/goblin_king.png", 64, 64, 5, 15)
+      m = Tile.new(x=best[0].rect.x, y=best[0].rect.y, w=best[0].rect.w, h=best[0].rect.h, side=side)
       best[0].primitives << m
       state.sprites << m
     else
       # fallback: pick any empty cell at random
       t = empty_cells.sample
       t[:content] = side
-      m = Tile.new(t.rect.x, t.rect.y, t.rect.w, t.rect.h,
-                   "sprites/goblin_king.png", 64, 64, 5, 15)
+      m = Tile.new(x=t.rect.x, y=t.rect.y, w=t.rect.w, h=t.rect.h, side=side)
       t.primitives << m
       state.sprites << m
     end
