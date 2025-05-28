@@ -1,7 +1,6 @@
 require 'app/menu.rb'
 require 'app/board.rb'
 
-
 def init args
   args.state.gamestate = :menu
   args.state.game = Menu.new()
@@ -58,7 +57,7 @@ def game_tick args
     tile = args.state.selected_cell
     return if tile.content != :empty
     t = Tile.new(x=tile.rect.x, y=tile.rect.y, w=tile.rect.w, h=tile.rect.h,
-                 path="sprites/kobold_priest.png", tile_w=32, tile_h=32, row=2, frames=8)
+                 side=:kobolds)
 
     tile.primitives << t
     tile.content = :kobold
@@ -120,7 +119,7 @@ def tick args
   when :game
     game_tick args
   when :computer_move
-    args.state.game.make_ai_move :goblin
+    args.state.game.make_ai_move :goblins
     args.state.gamestate = :game
   when :game_over
       args.outputs.primitives << args.state.game.render
