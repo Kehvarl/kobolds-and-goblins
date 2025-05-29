@@ -57,10 +57,10 @@ def game_tick args
     tile = args.state.selected_cell
     return if tile.content != :empty
     t = Tile.new(x=tile.rect.x, y=tile.rect.y, w=tile.rect.w, h=tile.rect.h,
-                 side=:kobolds)
+                 side=args.state.player_side)
 
     tile.primitives << t
-    tile.content = :kobold
+    tile.content = args.state.player_side
     args.state.sprites << t
 
     args.state.gamestate = :computer_move
@@ -78,12 +78,14 @@ def team_select_tick args
   if args.state.selected_button and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space)
     case args.state.selected_button.id
     when :kobolds
-      puts "Kobolds"
+      args.state.player_side = :kobolds
+      args.state.computer_side = :goblins
       args.state.game = Board.new()
       args.state.gamestate = :game
       return
     when :goblins
-      puts "Goblins"
+      args.state.player_side = :goblins
+      args.state.computer_side = :kobolds
       args.state.game = Board.new()
       args.state.gamestate = :game
       return
@@ -119,7 +121,7 @@ def tick args
   when :game
     game_tick args
   when :computer_move
-    args.state.game.make_ai_move :goblins
+    args.state.game.make_ai_move args.state.computer_side
     args.state.gamestate = :game
   when :game_over
       args.outputs.primitives << args.state.game.render
