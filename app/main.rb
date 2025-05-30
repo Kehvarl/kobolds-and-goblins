@@ -11,17 +11,15 @@ def menu_tick args
   if args.state.selected_button and (args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space)
     case args.state.selected_button.id
     when :new_game
-      puts "Start new game"
       args.state.menu = nil
       args.state.selected_button = nil
       args.state.game = Team_Select.new()
       args.state.gamestate = :team_select
       return
     when :how_to
-      puts "How To Play"
       args.state.gamestate = :how_to
     when :options
-      puts "Options Menu"
+      puts "Options..."
     when :exit
       args.gtk.request_quit
     end
@@ -68,7 +66,29 @@ def game_tick args
 
   args.outputs.primitives << args.state.game.render
 
+  if args.state.game.match_summary[args.state.player_side][:five] > 0
+    args.state.winner = args.state.player_side.to_s.capitalize
+    args.state.gamestate = :game_over
+  elsif args.state.game.match_summary[args.state.computer_side][:five] > 0
+    args.state.winner = args.state.computer_side.to_s.capitalize
+    args.state.gamestate = :game_over
+  end
+
   if args.state.game.moves_remaining == 0
+    args.state.winner = args.state.computer_side.to_s.capitalize
+    if args.state.game.match_summary[args.state.player_side][:four] >
+       args.state.game.match_summary[args.state.computer_side][:four]
+           args.state.winner = args.state.player_side.to_s.capitalize
+    elsif args.state.game.match_summary[args.state.player_side][:four] ==
+          args.state.game.match_summary[args.state.computer_side][:four]
+      if args.state.game.match_summary[args.state.player_side][:three] >
+         args.state.game.match_summary[args.state.computer_side][:three]
+        args.state.winner = args.state.player_side.to_s.capitalize
+      elsif args.state.game.match_summary[args.state.player_side][:three] >
+            args.state.game.match_summary[args.state.computer_side][:three]
+        args.state.winner = "None"
+      end
+    end
     args.state.gamestate = :game_over
   end
 end
@@ -114,7 +134,6 @@ def tick args
   when :team_select
     team_select_tick args
   when :unit_menu
-    puts "units"
     args.state.gamestate = :game
   when :how_to
     instructions_tick args
@@ -125,9 +144,19 @@ def tick args
     args.state.gamestate = :game
   when :game_over
       args.outputs.primitives << args.state.game.render
-      args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:255,b:255}.solid!
+      args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:255,b:255,a:128}.solid!
       args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:0,b:0}.border!
       args.outputs.primitives << {x:640, y:500, text:"Game Over", size_enum: 7, anchor_x:0.5}.label!
-
+      args.outputs.primitives << {x:640, y:400, text:"Winner: #{args.state.winner}",
+                                  size_enum: 3, anchor_x:0.5}.label!
+      if args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space
+        args.state.mathces = nil
+        args.state.grid = nil
+        args.state.sprites = nil
+        args.state.menu = nil
+        args.state.selected_button = nil
+        args.state.game = Menu.new()
+        args.state.gamestate = :menu
+      end
   end
 end
