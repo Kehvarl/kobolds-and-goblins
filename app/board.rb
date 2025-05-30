@@ -239,6 +239,23 @@ class Board
     find_matches
   end
 
+  def match_summary
+    score = Hash.new { |h, k| h[k] = { three: 0, four: 0, five: 0 } }
+
+    state.matches.each do |group|
+      cells = group[:cells]
+      tag   = group[:tag]
+      next if cells.empty?
+
+      side = cells.first[:content]
+      next if side == :empty
+
+      score[side][tag] += 1
+    end
+
+    score
+  end
+
   def moves_remaining
     return state.grid.cells.select{|c| c.content == :empty}.size
   end
