@@ -187,16 +187,20 @@ class Board
     end
 
     matches << tag_match(current) if current.length >= 3
-    matches.compact
+    return matches
   end
 
   def tag_match(cells)
-    tag =
-      case cells.length
-    when 3 then :three
-    when 4 then :four
-    when 5 then :five
-    else :longer
+    tag = nil
+    case cells.length
+      when 3
+        tag = :three
+      when 4
+        tag = :four
+      when 5
+        tag = :five
+      else
+        tag = :longer
     end
 
     { tag: tag, cells: cells }
@@ -228,7 +232,6 @@ class Board
       best[0].primitives << m
       state.sprites << m
     else
-      # fallback: pick any empty cell at random
       t = empty_cells.sample
       t[:content] = side
       m = Tile.new(x=t.rect.x, y=t.rect.y, w=t.rect.w, h=t.rect.h, side=side)
