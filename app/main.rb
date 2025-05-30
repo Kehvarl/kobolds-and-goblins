@@ -150,6 +150,9 @@ def tick args
       args.outputs.primitives << {x:640, y:400, text:"Winner: #{args.state.winner}",
                                   size_enum: 3, anchor_x:0.5}.label!
       if args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space
+        args.state.mathces = nil
+        args.state.grid = nil
+        args.state.sprites = nil
         args.state.menu = nil
         args.state.selected_button = nil
         args.state.game = Menu.new()
