@@ -144,10 +144,16 @@ def tick args
     args.state.gamestate = :game
   when :game_over
       args.outputs.primitives << args.state.game.render
-      args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:255,b:255,a:64}.solid!
+      args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:255,b:255,a:128}.solid!
       args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:0,b:0}.border!
       args.outputs.primitives << {x:640, y:500, text:"Game Over", size_enum: 7, anchor_x:0.5}.label!
       args.outputs.primitives << {x:640, y:400, text:"Winner: #{args.state.winner}",
                                   size_enum: 3, anchor_x:0.5}.label!
+      if args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space
+        args.state.menu = nil
+        args.state.selected_button = nil
+        args.state.game = Menu.new()
+        args.state.gamestate = :menu
+      end
   end
 end
