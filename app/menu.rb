@@ -10,6 +10,7 @@ class Menu
 
   def render
     out = []
+    out << state.menu.buttons.map(&:primitives)
     out <<  state.selection_point.merge(w: state.menu.button_w + 8,
                                         h: state.menu.button_h + 8,
                                         a: 128,
@@ -20,7 +21,6 @@ class Menu
                                         anchor_x: 0.5,
                                         anchor_y: 0.5)
 
-    out << state.menu.buttons.map(&:primitives)
     out
   end
 
@@ -99,7 +99,8 @@ class Menu
       text: text,
       rect: rect,
       primitives: [
-                   rect.merge(primitive_marker: :border),
+                   rect.merge(primitive_marker: :solid, r: 128, g: 128, b: 128),
+                   rect.merge(primitive_marker: :border, r: 64, g: 64, b: 64),
                    rect.center.merge(text: text, anchor_x: 0.5, anchor_y: 0.5)
                   ]
     }
