@@ -100,7 +100,8 @@ class Board
       rect: rect,
       content: :empty,
       primitives: [
-                   rect.merge(primitive_marker: :border),
+                   rect.merge(primitive_marker: :solid, r: 128, g: 128, b: 128),
+                   rect.merge(primitive_marker: :border, r: 64, g: 64, b: 64),
                    ]
     }
   end

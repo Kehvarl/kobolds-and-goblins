@@ -29,7 +29,11 @@ end
 
 def instructions_tick args
     instruction_string = "How To Play\n\n"
-    instruction_string +="Try to make a line of 5 Kobolds"
+    instruction_string +="Try to make a line of 5\n"
+    instruction_string +="If no line of 5 can be made\n"
+    instruction_string +="winner will be the side\n"
+    instruction_string +="with the most lines of 4\n"
+
 
     max_character_length = 80
 
@@ -128,6 +132,8 @@ def tick args
     init args
   end
 
+  args.outputs.primitives << {x:0, y:0, w:1280, h:720, r:0, g:0, b:0}.solid!
+
   case args.state.gamestate
   when :menu
     menu_tick args
@@ -148,6 +154,8 @@ def tick args
       args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:0,b:0}.border!
       args.outputs.primitives << {x:640, y:500, text:"Game Over", size_enum: 7, anchor_x:0.5}.label!
       args.outputs.primitives << {x:640, y:400, text:"Winner: #{args.state.winner}",
+                                  size_enum: 3, anchor_x:0.5}.label!
+      args.outputs.primitives << {x:640, y:300, text:"Click or Press Enter For New Game",
                                   size_enum: 3, anchor_x:0.5}.label!
       if args.inputs.mouse.click or args.inputs.keyboard.key_up.enter or args.inputs.keyboard.key_up.space
         args.state.mathces = nil
