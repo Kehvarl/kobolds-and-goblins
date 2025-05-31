@@ -39,11 +39,12 @@ def instructions_tick args
 
     instructions = String.wrapped_lines instruction_string,
                                               max_character_length
-
+    args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:255,b:255,a:128}.solid!
+    args.outputs.primitives << {x:180,y:180,w:930,h:360,r:255,g:0,b:0}.border!
     args.outputs.labels << instructions.map_with_index do |s, i|
       {
         x: 320,
-        y: 720 - 60,
+        y: 540 - 40,
         anchor_y: i,
         text: s
       }
