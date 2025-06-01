@@ -33,7 +33,9 @@ def instructions_tick args
     instruction_string +="If no line of 5 can be made\n"
     instruction_string +="winner will be the side\n"
     instruction_string +="with the most lines of 4\n"
-
+    instruction_string +="If still no winner\n"
+    instruction_string +="winner will be the side\n"
+    instruction_string +="with the most lines of 3.\n"
 
     max_character_length = 80
 
